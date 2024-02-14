@@ -40,10 +40,22 @@ public class Ball : MonoBehaviour
          //add force movement 
          rbBall.AddForce(direction * force);
     }
-    
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "Left Wall" || collision.gameObject.name == "Right Wall")
+        {
+            //Debug.Log("collided with Left Wall")
+            rbBall.Velocity = Vector3.zero;
+            inPlay = false; 
+        }
+    }
     // Update is called once per frame
     void Update()
-    {
-        
+    { 
+        if(inPlay == False)
+        {
+            transform.position = ballStartPos;
+            Launch(); 
+        }
     }
 }
