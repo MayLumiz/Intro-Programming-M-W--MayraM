@@ -15,18 +15,24 @@ public class Ball : MonoBehaviour
 
     public bool inPlay; // set to true/false if ball is in Play,set in Inspector 
     // Start is called before the first frame update
+    public bool inPlay; //Ball starting position, set in Inspector 
+
+    //Start is called before first frame update 
     void Start()
     {
         //Debug.Log("Hello World");
-        Launch();
+        Launch(); // call launch function at start
         //check if Ball is in Play 
-        //if (inPlay == false)// if balll is Not in Play 
+        void update ()
+        { 
+            if (inPlay == false)// if ball is Not in Play
+         }
         {
             transform.position = ballStartPos;
-            launch();
+            Launch();
         }
-        { 
-            void Launch ()
+        {
+            void Launch()
         }
         Vector3 direction = new Vector3(0, 0, 0);
         xDir = Random.Range(0, 2);
