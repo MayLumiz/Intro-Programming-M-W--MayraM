@@ -6,17 +6,34 @@ public class Ball : MonoBehaviour
 {
     //M,W Class
     //Global Variables
-    public Rigidbody2D rbBall;
+    public Rigidbody2D rbBall; //declare Rigidbody2D variable,set in inspector via drag and dropping 
 
-    public float force = 200;
+    public float force = 200; //declare and set force variable 
 
     private float xDir;
     private float yDir;
+
+    public bool inPlay; // set to true/false if ball is in Play,set in Inspector 
     // Start is called before the first frame update
+    public bool inPlay; //Ball starting position, set in Inspector 
+
+    //Start is called before first frame update 
     void Start()
     {
         //Debug.Log("Hello World");
-
+        Launch(); // call launch function at start
+        //check if Ball is in Play 
+        void update ()
+        { 
+            if (inPlay == false)// if ball is Not in Play
+         }
+        {
+            transform.position = ballStartPos;
+            Launch();
+        }
+        {
+            void Launch()
+        }
         Vector3 direction = new Vector3(0, 0, 0);
         xDir = Random.Range(0, 2);
         //Debug.Log("xDir = "xDir);
@@ -39,7 +56,9 @@ public class Ball : MonoBehaviour
         }
          //add force movement 
          rbBall.AddForce(direction * force);
+        inPlay = true;
     }
+    //EVENTS UPOM VOLLISION
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.name == "Left Wall" || collision.gameObject.name == "Right Wall")
