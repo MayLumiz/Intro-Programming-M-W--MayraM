@@ -23,16 +23,16 @@ public class Ball : MonoBehaviour
         //Debug.Log("Hello World");
         Launch(); // call launch function at start
         //check if Ball is in Play 
-        void update ()
+        void update ();
         { 
-            if (inPlay == false)// if ball is Not in Play
+            //if (inPlay == false)// if ball is Not in Play
          }
         {
             transform.position = ballStartPos;
             Launch();
         }
         {
-            void Launch()
+            void Launch();
         }
         Vector3 direction = new Vector3(0, 0, 0);
         xDir = Random.Range(0, 2);
