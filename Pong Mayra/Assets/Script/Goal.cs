@@ -11,8 +11,9 @@ public class Goal : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void Update() 
     {
         
     }
+    private void OnTriggerEnter2D(Collision2D)
 }
