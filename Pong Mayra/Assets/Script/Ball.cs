@@ -4,77 +4,62 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    //M,W Class
-    //Global Variables
-    public Rigidbody2D rbBall; //declare Rigidbody2D variable,set in inspector via drag and dropping 
+    // Global Variables
+    public Rigidbody2D rbBall; // Rigidbody2D variable for the ball
 
-    public float force = 200; //declare and set force variable 
+    public float force = 200; // Force variable for launching the ball
 
-    private float xDir;
-    private float yDir;
+    private Vector3 ballStartPos; // Starting position of the ball
+    private bool inPlay = false; // Boolean to check if the ball is in play
 
-    public bool inPlay; // set to true/false if ball is in Play,set in Inspector 
     // Start is called before the first frame update
-     //Ball starting position, set in Inspector 
-
-    //Start is called before first frame update 
     void Start()
     {
-        //Debug.Log("Hello World");
-        Launch(); // call launch function at start
-        //check if Ball is in Play 
-        void update ();
-        { 
-            //if (inPlay == false)// if ball is Not in Play
-         }
-        {
-            transform.position = ballStartPos;
-            Launch();
-        }
-        {
-            void Launch();
-        }
-        Vector3 direction = new Vector3(0, 0, 0);
-        xDir = Random.Range(0, 2);
-        //Debug.Log("xDir = "xDir);
-        if (xDir == 0)
-        
-        {
-            direction.x = -1;
-        } else if ( xDir == 1)
-        {
-            direction.x = 1;
-        }
-        yDir = Random.Range(0, 2);
-        if(yDir == 0)
-        {
-            direction.y = -1; 
-        }
-        else if (yDir == 1)
-        {
-            direction.y = 1;
-        }
-         //add force movement 
-         rbBall.AddForce(direction * force);
+        ballStartPos = transform.position; // Store the starting position of the ball
+        Launch(); // Call the Launch function to start the ball movement
+    }
+
+    // Function to launch the ball
+    void Launch()
+    {
+        // Reset the position of the ball
+        transform.position = ballStartPos;
+
+        // Generate random direction for the ball
+        Vector2 direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f)).normalized;
+
+        // Apply force to the ball in the given direction
+        rbBall.AddForce(direction * force);
+
+        // Set inPlay flag to true
         inPlay = true;
     }
-    //EVENTS UPOM VOLLISION
+
+    // Event triggered upon collision
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "Left Wall" || collision.gameObject.name == "Right Wall")
+        // Check if the ball collided with the left or right wall
+        if (collision.gameObject.CompareTag("LeftWall") || collision.gameObject.CompareTag("RightWall"))
         {
-            //Debug.Log("collided with Left Wall")
-            rbBall.Velocity = Vector3.zero;
-            inPlay = false; 
+            // Reset the velocity of the ball
+            rbBall.velocity = Vector2.zero;
+
+            // Set inPlay flag to false
+            inPlay = false;
+
+            // Relaunch the ball
+            Launch();
         }
     }
+
     // Update is called once per frame
     void Update()
-    { 
-        if(inPlay == False)
+    {
+        // Check if the ball is not in play
+        if (!inPlay)
         {
+            // Reset the position of the ball
             transform.position = ballStartPos;
-            Launch(); 
         }
     }
 }

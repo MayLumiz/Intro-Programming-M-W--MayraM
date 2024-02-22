@@ -10,6 +10,7 @@ public class Paddle : MonoBehaviour
     public bool isPlayer1;
 
     public float paddleSpeed = 0.05f;
+
     void Start()
     {
         //debug.Log("Paddle Script! Yay!");
@@ -25,16 +26,17 @@ public class Paddle : MonoBehaviour
         }
         else
         {
-            PLayer2Control();
+            Player2Control();
         }
     }
+
     void Player1Control()
     {
         Vector3 newPos = transform.position;
 
-        if(newPos.y <= 4.1f && newPos.y >= -4.1f)
+        if (newPos.y <= 4.1f && newPos.y >= -4.1f)
         {
-            if (Input.GetKey(KyCode.W))
+            if (Input.GetKey(KeyCode.W))
             {
                 newPos.y += paddleSpeed;
             }
@@ -42,15 +44,17 @@ public class Paddle : MonoBehaviour
             {
                 newPos.y -= paddleSpeed;
             }
-            trasform.position = newPos;
+            transform.position = newPos;
         }
     }
+
     void Player2Control()
     {
         Vector3 newPos = transform.position;
+
         if (newPos.y <= 4.1f && newPos.y >= -4.1f)
         {
-            if(Input.GetKey(KeyCode.UpArrow))
+            if (Input.GetKey(KeyCode.UpArrow))
             {
                 newPos.y += paddleSpeed;
             }
@@ -60,15 +64,16 @@ public class Paddle : MonoBehaviour
             }
             transform.position = newPos;
         }
-        if (newPos.y >= 4.1f)
+
+        if (newPos.y > 4.1f)
         {
-            newPos.y = 4;
+            newPos.y = 4.1f;
             transform.position = newPos;
         }
-        else if (newPos.y <= -4.1f)
+        else if (newPos.y < -4.1f)
         {
-            newPos.y <= -4;
+            newPos.y = -4.1f;
             transform.position = newPos;
         }
     }
-}   
+}
