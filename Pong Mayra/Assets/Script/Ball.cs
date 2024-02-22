@@ -15,7 +15,7 @@ public class Ball : MonoBehaviour
 
     public bool inPlay; // set to true/false if ball is in Play,set in Inspector 
     // Start is called before the first frame update
-    public bool inPlay; //Ball starting position, set in Inspector 
+     //Ball starting position, set in Inspector 
 
     //Start is called before first frame update 
     void Start()
