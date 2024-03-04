@@ -3,7 +3,12 @@ guid: eb18b8d598c2f2844b41de636bd71987
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - foodPrefab: {instanceID: 0}
+  - wallTop: {instanceID: 0}
+  - wallBottom: {instanceID: 0}
+  - wallLeft: {instanceID: 0}
+  - wallRight: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
