@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - foodPrefab: {instanceID: 0}
+  - foodPrefab: {fileID: 6456420445042756342, guid: 67dad4166aa60bf48a388a4662cf6dd3, type: 3}
   - wallTop: {instanceID: 0}
   - wallBottom: {instanceID: 0}
   - wallLeft: {instanceID: 0}
