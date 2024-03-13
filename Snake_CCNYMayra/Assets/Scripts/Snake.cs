@@ -1,82 +1,75 @@
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Snake : MonoBehaviour
 {
-    //VOLLEGR NOW IN CLSSS MW
+    public GameObject kirbyPrefab; // Prefab for Kirby
+    public float speed = 1.0f;
+    public float rotationSpeed = 50.0f;
+    public List<Transform> bodyParts = new List<Transform>();
+    public float minDistance = 0.25f;
+    public int beginSize;
 
-    //GLOBAL VARIABLES
-    Vector3 dir = Vector3.right; //decare default movement direction
-                                 //Remember the difference b/w Vector2(x,y) & Vector3(x,y,z)
-                                 //there is shorthand for Vector2/3 directions.
-                                 //In this one, Vector3.right = Vector3(1,0,0), moving it to the RIGHT
+    private float distance;
+    private Transform curBodyPart;
+    private Transform prevBodyPart;
 
-    // Start is called before the first frame update
     void Start()
     {
-        //OPTION: Randomize the direction of the snake like our Pong Ball when it starts
-
-        //Call MoveSnake() every 300ms(0.3 seconds) to move the snake
-        InvokeRepeating("MoveSnake", 0.3f, 0.3f);
-        //InvokeRepeating("methodName", time, repeatRate)
-        //methodName: name of method/function to invoke
-        //time: start invoking after n seconds
-        //repeatRate: repeat after every n seconds.
+        for (int i = 0; i < beginSize - 1; i++)
+        {
+            AddBodyPart();
+            
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //NOTE: if we did movement in update, it would go SUPER FAST, so let's call it on a delay in Start()
-
-        //Change the Snake's direction by calling ChangeDirection(), detecting key presses all the time
-        ChangeDirection(); 
+        Move();
     }
 
-    void MoveSnake()
+    void Move()
     {
-        //In Snake, the snake is ALWAYS moving in some direction, never standing still.
-        //MOVE SNAKE HEAD IN A DIRECTION
-        transform.Translate(dir);
-        //Translate moves the transform property in the direction and distance of the translation,
-        //In this case, we are moving in the whatever direction we've set the dir variable to be the distance of that variable
+        float curSpeed = speed;
 
-    }
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            curSpeed *= 2.0f; // Double speed if moving up
+        }
 
-    private void ChangeDirection()
-    {
-        if(Input.GetKey(KeyCode.RightArrow)) //if the Right Arrow is continuously pressed down, then...
+        transform.Translate(Vector3.forward * curSpeed * Time.deltaTime);
+        if (Input.GetAxis("Horizontal") != 0)
         {
-            dir = Vector3.right; //change the direction to RIGHT
-            //Debug.Log("direction = right"); //print to console
-        }//MOVE LEFT
-        else if (Input.GetKey(KeyCode.LeftArrow)) //if the Left Arrow is continuously pressed down, then...
+            transform.Rotate(Vector3.up * rotationSpeed * Time.deltaTime * Input.GetAxis("Horizontal"));
+        }
+
+        if (bodyParts.Count > 0)
         {
-            dir = Vector3.left; //change the direction to LEFT
-                                //NOTE: this could also be written as dir = - Vector3.right, "-right" = left
-                                //Debug.Log("direction = left"); //print to console
-        }//MOVE UP
-        else if (Input.GetKey(KeyCode.UpArrow)) //if the Up Arrow is continuously pressed down, then...
-        {
-            dir = Vector3.up; //change the direction to UP
-            //Debug.Log("direction = up"); //print to console
-        }//MOVE DOWN
-        else if (Input.GetKey(KeyCode.DownArrow)) //if the Down Arrow is continuously pressed down, then...
-        {
-            dir = Vector3.down; //change the direction to DOWN
-            //Debug.Log("direction = down"); //print to console
+            bodyParts[0].position = transform.position;
+
+            for (int i = 1; i < bodyParts.Count; i++)
+            {
+                curBodyPart = bodyParts[i];
+                prevBodyPart = bodyParts[i - 1];
+                distance = Vector3.Distance(prevBodyPart.position, curBodyPart.position);
+                Vector3 newPos = prevBodyPart.position;
+                newPos.y = transform.position.y;
+                float T = Time.deltaTime * distance / minDistance * curSpeed;
+                if (T > 0.5f)
+                {
+                    T = 0.5f;
+                }
+                curBodyPart.position = Vector3.Slerp(curBodyPart.position, newPos, T);
+                curBodyPart.rotation = Quaternion.Slerp(curBodyPart.rotation, prevBodyPart.rotation, T);
+            }
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void AddBodyPart()
     {
-        //When Snake collides with Food...
-        if (collision.gameObject.tag == "Food")
-        {
-            //Debug.Log("food eaten");
-            Destroy(collision.gameObject); //Remove the Food
-
-        }
+        Transform newPart = (Instantiate(kirbyPrefab, bodyParts[bodyParts.Count - 1].position, Quaternion.identity) as GameObject).transform;
+        newPart.SetParent(transform);
+        bodyParts.Add(newPart);
     }
 }
