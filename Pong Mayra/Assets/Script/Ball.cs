@@ -15,6 +15,7 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+         rbBall = GetComponent<Rigidbody2D>(); // Assign the Rigidbody2D component to rbBall
         ballStartPos = transform.position; // Store the starting position of the ball
         Launch(); // Call the Launch function to start the ball movement
     }
