@@ -17,20 +17,24 @@ public class Ball : MonoBehaviour
     }
     private void InitialPush()
     {
-        Vector2 dir = Vector2.left;
+        Vector2 dir = Random.value < 0.5f ? Vector2.left : Vector2.right;
+        
         dir.y = Random.Range(-maxInitialAngle, maxInitialAngle);
         rb2d.velocity = dir * moveSpeed;
     }
     private void ResetBall()
     {
-       
+       float posY = Random.Range(-maxStarty, maxStarty);
+       Vector2 position = new Vector2(startX, posY);
+       transform.position = position; 
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         ScoreZone scoreZone = collision.GetComponent<ScoreZone>();
         if(scoreZone)
         {
-            Debug.Log("poyo!");
+            ResetBall();
+            InitialPush();
         }
     }
 }
