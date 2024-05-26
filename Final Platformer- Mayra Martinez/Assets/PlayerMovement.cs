@@ -15,12 +15,17 @@ public class PlayerMovement : MonoBehaviour
     int jumpsRemaining;
     [Header("GroundCheck")]
     public Transform groundCheckPos;
-    public Vector2 groundCheckSize = new Vector2(0.5f, 0.05f);
+    public Vector2 groundCheckSize = new Vector2(0.49f, 0.03f);
     public LayerMask groundLayer;
     [Header("Gravity")]
     public float baseGravity = 2;
     public float maxFallSpeed = 18f;
     public float fallSpeedMultiplier = 2f;
+    [Header("WallCheck")]
+    public Transform wallCheckPos;
+    public Vector2 wallCheckSize = new Vector2(0.49f, 0.03f);
+    public LayerMask wallLayer;
+    private bool isFacingRight = true;
 
     // Start is called before the first frame update
     void Start()
@@ -61,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
             jumpsRemaining--;
         }
-        else if (context.canceled)
+        else if (context.canceled && rb.velocity.y >0)
         {
             //little jump 
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
@@ -76,9 +81,21 @@ public class PlayerMovement : MonoBehaviour
             jumpsRemaining = maxJumps;
         }
     }
+    private void Flip()
+    {
+        if(isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        {
+            isFacingRight = !isFacingRight;
+            Vector3 ls = transform.localScale;
+            ls.x *= -1f;
+            transform.localScale = ls;
+        }
+    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
         Gizmos.DrawCube(groundCheckPos.position, groundCheckSize);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawCube(wallCheckPos.position, wallCheckSize);
     }
 }
