@@ -87,10 +87,10 @@ public class PlayerMovement : MonoBehaviour
             //force flip
             if(transform.localScale.x != wallJumpDirection)
             {
-              isFacingRight = !isFacingRight;
-              Vector3 ls = transform.localScale;
-              ls.x *= -1f;
-              transform.localScale = ls;
+               isFacingRight = !isFacingRight;
+               Vector3 ls = transform.localScale;
+               ls.x *= -1f;
+               transform.localScale = ls;
             }
 
             Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f); // wall jump = 0.05f -- jump again = 0.6f
