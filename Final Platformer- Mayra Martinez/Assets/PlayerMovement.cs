@@ -154,7 +154,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private void CancelWallJump()
     {
-        isWallJumping = false;
+        isWallJumping = true;
     }
     private void Flip()
     {
