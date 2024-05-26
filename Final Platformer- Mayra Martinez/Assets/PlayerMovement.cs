@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
     [Header("PlayerMovement")]
+    private bool isFacingRight = false;
     public float moveSpeed = 5f;
     float horizontalMovement;
     [Header("Jumping")]
@@ -25,7 +26,6 @@ public class PlayerMovement : MonoBehaviour
     public Transform wallCheckPos;
     public Vector2 wallCheckSize = new Vector2(0.49f, 0.03f);
     public LayerMask wallLayer;
-    private bool isFacingRight = true;
 
     // Start is called before the first frame update
     void Start()
@@ -42,15 +42,9 @@ public class PlayerMovement : MonoBehaviour
     }
     private void Gravity()
     {
-        if(rb.velocity.y < 0)
-        {
-            rb.gravityScale = baseGravity * fallSpeedMultiplier; //fall faster 
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
-        }
-        else
-        {
-            rb.gravityScale = baseGravity;
-        }
+        GroundCheck();
+        ProcessGravity();
+        Flip();
     }
     public void Move(InputAction.CallbackContext context)
     {
@@ -66,7 +60,7 @@ public class PlayerMovement : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpPower);
             jumpsRemaining--;
         }
-        else if (context.canceled && rb.velocity.y >0)
+        else if (context.canceled)
         {
             //little jump 
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
@@ -79,6 +73,18 @@ public class PlayerMovement : MonoBehaviour
         if (Physics2D.OverlapBox(groundCheckPos.position, groundCheckSize, 0, groundLayer))
         {
             jumpsRemaining = maxJumps;
+        }
+    }
+    private void ProcessGravity()
+    {
+         if(rb.velocity.y < 0)
+        {
+            rb.gravityScale = baseGravity * fallSpeedMultiplier; //fall faster 
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
+        }
+        else
+        {
+            rb.gravityScale = baseGravity;
         }
     }
     private void Flip()
