@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
     public Rigidbody2D rb;
-    [Header("PlayerMovement")]
+    [Header("Player Movement")]
     private bool isFacingRight = false;
     public float moveSpeed = 5f;
     float horizontalMovement;
@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpPower = 10f;
     public int maxJumps = 2;
     int jumpsRemaining;
-    [Header("GroundCheck")]
+    [Header("Ground Check")]
     public Transform groundCheckPos;
     public Vector2 groundCheckSize = new Vector2(0.49f, 0.03f);
     public LayerMask groundLayer;
@@ -23,11 +23,11 @@ public class PlayerMovement : MonoBehaviour
     public float baseGravity = 2;
     public float maxFallSpeed = 18f;
     public float fallSpeedMultiplier = 2f;
-    [Header("WallCheck")]
+    [Header("Wall Check")]
     public Transform wallCheckPos;
     public Vector2 wallCheckSize = new Vector2(0.49f, 0.03f);
     public LayerMask wallLayer;
-    [Header("WallMovement")]
+    [Header("Wall Movement")]
     public float wallSlideSpeed = 2;
     bool isWallSliding;
     bool isWallJumping;
@@ -36,13 +36,11 @@ public class PlayerMovement : MonoBehaviour
     float wallJumpTimer;
     public Vector2 wallJumpPower = new Vector2(5f, 10f);
 
-    // Start is called before the first frame update
     void Start()
     {
-        
+        jumpsRemaining = maxJumps;
     }
 
-    // Update is called once per frame
     void Update()
     {
         GroundCheck();
@@ -52,91 +50,93 @@ public class PlayerMovement : MonoBehaviour
 
         if (!isWallJumping)
         {
-          rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
-          Flip();
+            rb.velocity = new Vector2(horizontalMovement * moveSpeed, rb.velocity.y);
+            Flip();
         }
     }
+
     public void Move(InputAction.CallbackContext context)
     {
         horizontalMovement = context.ReadValue<Vector2>().x;
     }
+
     public void Jump(InputAction.CallbackContext context)
     {
         if (jumpsRemaining > 0)
         {
-        if (context.performed)
-        {
-            //hold down jump for big jump
-            rb.velocity = new Vector2(rb.velocity.x, jumpPower);
-            jumpsRemaining--;
+            if (context.performed)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpPower);
+                jumpsRemaining--;
+            }
+            else if (context.canceled)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+                jumpsRemaining--;
+            }
         }
-        else if (context.canceled)
-        {
-            //little jump 
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-            jumpsRemaining--;
-        }
-        }
-        //walljumping
-        if(context.performed && wallJumpTimer > 0f)
+
+        if (context.performed && wallJumpTimer > 0f)
         {
             isWallJumping = true;
-            rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y); //Jump away from the wall 
-            wallJumpTimer= 0f;
+            rb.velocity = new Vector2(wallJumpDirection * wallJumpPower.x, wallJumpPower.y);
 
-            //force flip
-            if(transform.localScale.x != wallJumpDirection)
+            if (transform.localScale.x != wallJumpDirection)
             {
-               isFacingRight = !isFacingRight;
-               Vector3 ls = transform.localScale;
-               ls.x *= -1f;
-               transform.localScale = ls;
+                isFacingRight = !isFacingRight;
+                Vector3 ls = transform.localScale;
+                ls.x *= -1f;
+                transform.localScale = ls;
             }
 
-            Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f); // wall jump = 0.05f -- jump again = 0.6f
+            Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f);
         }
     }
+
     private void GroundCheck()
     {
-        if (Physics2D.OverlapBox(groundCheckPos.position, groundCheckSize, 0, groundLayer)) // checks if set box overlaps w ground
+        if (Physics2D.OverlapBox(groundCheckPos.position, groundCheckSize, 0, groundLayer))
         {
             jumpsRemaining = maxJumps;
             isGrounded = true;
         }
-        else 
+        else
         {
             isGrounded = false;
         }
     }
+
     private bool WallCheck()
     {
-        return Physics2D.OverlapBox(wallCheckPos.position,wallCheckSize, 0, wallLayer);
+        return Physics2D.OverlapBox(wallCheckPos.position, wallCheckSize, 0, wallLayer);
     }
+
     private void ProcessGravity()
     {
-        //falling gravity
-         if(rb.velocity.y < 0)
+        if (rb.velocity.y < 0)
         {
-            rb.gravityScale = baseGravity * fallSpeedMultiplier; //fall faster 
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed)); // max fall speed
+            rb.gravityScale = baseGravity * fallSpeedMultiplier;
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -maxFallSpeed));
         }
         else
         {
             rb.gravityScale = baseGravity;
         }
     }
+
     private void ProcessWallSlide()
     {
-        if (!isGrounded & WallCheck() & horizontalMovement != 0)
+        if (!isGrounded && WallCheck() && horizontalMovement != 0)
         {
             isWallSliding = true;
-            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, - wallSlideSpeed)); // caps fall rate
+            rb.velocity = new Vector2(rb.velocity.x, Mathf.Max(rb.velocity.y, -wallSlideSpeed));
         }
-        else 
+        else
         {
             isWallSliding = false;
         }
     }
+
     private void ProcessWallJump()
     {
         if (isWallSliding)
@@ -152,13 +152,15 @@ public class PlayerMovement : MonoBehaviour
             wallJumpTimer -= Time.deltaTime;
         }
     }
+
     private void CancelWallJump()
     {
-        isWallJumping = true;
+        isWallJumping = false;
     }
+
     private void Flip()
     {
-        if(isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
+        if (isFacingRight && horizontalMovement < 0 || !isFacingRight && horizontalMovement > 0)
         {
             isFacingRight = !isFacingRight;
             Vector3 ls = transform.localScale;
@@ -166,6 +168,7 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = ls;
         }
     }
+
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.white;
