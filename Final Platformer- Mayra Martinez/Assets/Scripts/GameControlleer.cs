@@ -1,9 +1,11 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+// Manages the game state, progress, and UI interactions
 public class GameController : MonoBehaviour
 {
     int progressAmount;
@@ -16,27 +18,26 @@ public class GameController : MonoBehaviour
     {
         progressAmount = 0;
         progressSlider.value = 0;
-        Gem.OnGemCollect += IncreaseProgressAmount;
-        
-        resetButton.onClick.AddListener(ResetGame);
+        Gem.OnGemCollect += IncreaseProgressAmount; // Subscribe to gem collection event
+
+        resetButton.onClick.AddListener(ResetGame); // Add listener to reset button
     }
 
+    // Method to increase the progress amount
     void IncreaseProgressAmount(int amount)
     {
         progressAmount += amount;
         progressSlider.value = progressAmount;
-        if (progressAmount >= 100)
+        if (progressAmount >= 100) // Check if progress reaches 100
         {
-            // You win !!!
-            Debug.Log("You Win");
             EndGame();
         }
     }
 
+    // Method to end the game
     void EndGame()
     {
-        // Display the win screen
-        winScreen.SetActive(true);
+        winScreen.SetActive(true); // Display the win screen
 
         // Disable player controls
         PlayerMovement player = FindObjectOfType<PlayerMovement>();
@@ -49,17 +50,16 @@ public class GameController : MonoBehaviour
     // Method to reset the game
     void ResetGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // Reload the current scene
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+       
     }
 
     void OnDestroy()
     {
-        Gem.OnGemCollect -= IncreaseProgressAmount;
+        Gem.OnGemCollect -= IncreaseProgressAmount; // Unsubscribe from gem collection event
     }
 }
